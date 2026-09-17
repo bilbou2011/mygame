@@ -1,106 +1,19 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Constellation Loom | Supabase Edition</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="loadingScreen" class="loading-screen">
-      <div class="loader-orbit"><i></i><i></i><i></i><span>LOOM</span></div>
-      <p>Connecting to the archive</p>
-    </div>
-
-    <header class="topbar">
-      <div class="brand">✦ <span>CONSTELLATION</span> LOOM</div>
-      <nav>
-        <button id="fullscreenBtn" class="ghost">Fullscreen</button>
-        <button id="logoutBtn" class="ghost hidden">Log out</button>
-      </nav>
-    </header>
-
-    <main class="app-shell">
-      <section id="authPanel" class="auth-panel card">
-        <div class="eyebrow">REAL AUTH • SUPABASE</div>
-        <h1>Enter the archive</h1>
-        <p class="muted">
-          This edition uses real email auth via Supabase. Create an account, verify via email,
-          and save your progress to the database.
-        </p>
-
-        <div class="auth-tabs">
-          <button class="tab active" data-mode="login">Log in</button>
-          <button class="tab" data-mode="signup">Sign up</button>
-        </div>
-
-        <form id="authForm" class="auth-form">
-          <label>
-            Email
-            <input id="emailInput" type="email" placeholder="you@example.com" required />
-          </label>
-          <label>
-            Password
-            <input id="passwordInput" type="password" placeholder="••••••••" required />
-          </label>
-          <label id="nameWrap" class="hidden">
-            Display name
-            <input id="nameInput" type="text" placeholder="Nova" maxlength="18" />
-          </label>
-          <button id="submitAuthBtn" type="submit" class="primary-button">Log in</button>
-        </form>
-
-        <div id="authMessage" class="auth-message" aria-live="polite"></div>
-      </section>
-
-      <section id="gamePanel" class="game-panel hidden">
-        <div class="hud card">
-          <div>
-            <div class="eyebrow">LIVE MISSION</div>
-            <h2 id="missionTitle">Level 1 · First Light</h2>
-          </div>
-          <div class="stats">
-            <span>Seeds <strong id="seedDisplay">0</strong>/12</span>
-            <span>Level <strong id="levelDisplay">1</strong></span>
-            <span>Time <strong id="timerDisplay">60</strong></span>
-            <span>Armor <strong id="armorDisplay">100%</strong></span>
-          </div>
-        </div>
-
-        <div class="canvas-wrap card">
-          <canvas id="gameCanvas" width="960" height="600"></canvas>
-          <div class="canvas-tip">WASD / arrows move · Space pulses · P pauses</div>
-        </div>
-
-        <div class="bottom-row">
-          <div class="card mini-panel">
-            <div class="eyebrow">ACCOUNT</div>
-            <div id="userBadge" class="user-badge">Pilot</div>
-            <div id="profileMeta" class="meta">Syncing…</div>
-          </div>
-
-          <div class="card mini-panel">
-            <div class="eyebrow">ADMIN</div>
-            <div id="adminStatus" class="meta">Not enabled</div>
-            <button id="adminButton" class="ghost small hidden">Open admin panel</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <aside id="adminPanel" class="admin-panel hidden">
-      <div class="card admin-card">
-        <div class="eyebrow">OWNER PANEL</div>
-        <h3>Admin tools</h3>
-        <button id="grantLevelBtn" class="primary-button small">Grant next level</button>
-        <button id="restoreArmorBtn" class="ghost small">Restore armor</button>
-        <button id="resetSaveBtn" class="danger small">Reset player save</button>
-      </div>
-    </aside>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script src="game.js"></script>
-    <script src="app.js"></script>
-  </body>
-</html>
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Constellation Loom — Eclipse Edition</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="loadingScreen" class="loading-screen"><img src="assets/eclipse-sigil.svg" alt="Eclipse Sigil" class="loading-mark"><div class="loading-title">ECLIPSE EDITION</div><div class="loading-track"><i></i></div><p id="loadingText">Calibrating the night engine…</p></div>
+<header class="topbar"><a class="brand" href="#top"><img src="assets/eclipse-sigil.svg" alt=""> <span>CONSTELLATION</span> LOOM</a><nav><button id="shopButton" class="ghost">Wardrobe</button><button id="fullscreenBtn" class="ghost">Fullscreen</button><button id="settingsButton" class="ghost">Settings</button><button id="logoutBtn" class="ghost hidden">Log out</button><span id="userBadge"></span></nav></header>
+<main class="shell" id="top">
+<section id="authPanel" class="auth card"><div class="eyebrow">NIGHTFALL NETWORK · SECURE ACCESS</div><h1>Enter the <em>Loom.</em></h1><p class="muted">Create an account to save your pilot, wardrobe, progress, and bug reports. Your password is handled by Supabase Auth.</p><div class="tabs"><button class="tab active" data-mode="login">Log in</button><button class="tab" data-mode="signup">Sign up</button></div><form id="authForm"><label>Email<input id="emailInput" type="email" required placeholder="you@example.com"></label><label>Password<input id="passwordInput" type="password" required minlength="6" placeholder="••••••••"></label><label id="nameWrap" class="hidden">Pilot name<input id="nameInput" maxlength="18" placeholder="Nova"></label><button class="primary" id="submitAuthBtn">Log in ↗</button></form><div id="authMessage" class="auth-message"></div></section>
+<section id="gamePanel" class="hidden"><section class="hero"><div><p class="eyebrow">ECLIPSE EDITION · <span id="worldLabel">ORBITAL MEADOW</span></p><h2>The sky has<br><em>teeth now.</em></h2><p class="lede">Twenty-four missions. Six hostile worlds. The monsters hear your pulse. Harvest the light, take a power core when you are hurt, and make it through the eclipse.</p></div><div class="world-card"><span id="worldNumber">WORLD 01 / 06</span><strong id="worldName">Orbital Meadow</strong><small>Made with love by <b>Moonforge Atelier</b>.</small></div></section>
+<section class="layout"><div class="game-card card"><div class="hud"><div><span class="eyebrow">LIVE MISSION</span><h3 id="missionTitle">Level 1 · First Light</h3></div><div class="stats"><span>LIGHT <b id="seedDisplay">0</b>/12</span><span>LEVEL <b id="levelDisplay">1</b></span><span>TIME <b id="timerDisplay">60</b></span><span>HEALTH <b id="healthDisplay">100%</b></span></div></div><div class="canvas-wrap"><canvas id="gameCanvas" width="1100" height="680"></canvas><div class="tip">WASD / arrows move · SPACE pulse · P pause</div></div><div class="game-foot">Collect light · power cores restore health · pulse pushes hunters away <span id="saveStatus">cloud save ready</span></div></div><aside class="rail"><div class="card progress"><span class="eyebrow">ECLIPSE ARCHIVE</span><h3 id="progressTitle">World 1 unlocked</h3><div class="bar"><i id="progressBar"></i></div><small id="progressText">Level 1 of 24</small></div><div class="card"><span class="eyebrow">THREAT INDEX</span><h3 id="threat">Hunters dormant</h3><p class="muted">Every level adds faster hunters. Guardians arrive on missions 4, 8, 12, 16, 20, and 24.</p></div><div class="card"><span class="eyebrow">SIDE QUESTS</span><a href="quantum_courier.html" class="ad cyan">Quantum Courier <small>Dual reality logistics ↗</small></a><a href="Neon_Echo_Real_Website.html" class="ad pink">Neon Echo <small>Reflex arena ↗</small></a><a href="rift_runner.html" class="ad gold">Rift Runner <small>New game · outrun the fracture ↗</small></a><a href="https://bilbou2011.github.io/fortune-wheel/" target="_blank" rel="noopener" class="ad violet">Fortune Wheel <small>Spin for a surprise ↗</small></a></div><button id="reportButton" class="card report">Report a bug ↗</button></aside></section></section>
+</main>
+<div id="shopModal" class="modal hidden"><div class="modal-card"><button class="close" data-close="shopModal">×</button><p class="eyebrow">MOONFORGE WARDROBE</p><h2>Choose your skin.</h2><p class="muted">Skins are cosmetic and saved to your account. Your first skin is free; collect light to unlock the rest.</p><div id="skinGrid" class="skin-grid"></div></div></div>
+<div id="settingsModal" class="modal hidden"><div class="modal-card"><button class="close" data-close="settingsModal">×</button><p class="eyebrow">SYSTEM SETTINGS</p><h2>Your rig, your rules.</h2><label class="check"><input id="soundToggle" type="checkbox" checked> Sound effects</label><label class="check"><input id="motionToggle" type="checkbox"> Reduce motion</label><button id="clearSave" class="danger">Clear cloud save</button><p class="privacy">Fullscreen uses your browser permission. The admin panel is controlled by the Supabase role—not a secret in the frontend.</p></div></div>
+<div id="reportModal" class="modal hidden"><div class="modal-card"><button class="close" data-close="reportModal">×</button><p class="eyebrow">BUG TRANSMISSION</p><h2>Something broke?</h2><p class="muted">Send a short report to the game's database so the owner can review it. Do not include passwords or private information.</p><form id="reportForm"><input id="bugTitle" required maxlength="80" placeholder="Short title"><textarea id="bugDetails" required maxlength="1000" placeholder="What happened? How can we reproduce it?"></textarea><button class="primary">Send report ↗</button></form><div id="reportMessage" class="auth-message"></div></div></div>
+<div id="cookies" class="cookies"><div><b>Before you enter the archive</b><p>We use essential local preferences only. Auth and reports are handled by Supabase.</p></div><button id="acceptCookies">Accept</button></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="game.js"></script><script src="app.js"></script>
+</body></html>
