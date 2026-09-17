@@ -1,17 +1,71 @@
-# Constellation Loom — Eclipse Edition
+# Constellation Loom — Supabase Edition
 
-This is a large standalone browser build with 24 missions across six worlds, escalating monster pursuit, guardian encounters every fourth level, fullscreen, pause, autosave, local profile/email label, cookie consent, settings, accessibility-friendly layout, story, ads, and a local owner-tools demo.
+This branch is set up as a real Supabase-authenticated browser game prototype.
 
-## Important security note
+## What this gives you
 
-This download is entirely client-side. The email field is saved only in browser local storage and is **not official email authentication**. Never enter a password. The owner panel code is also not truly secret because anyone can inspect local files. Real email verification and secure admin access require a backend such as Firebase Auth, Supabase Auth, or a custom server.
+- Real email/password auth via Supabase
+- Secure user sessions
+- User profile creation
+- Database-backed progress saves
+- Admin visibility tied to a DB role
+- Fullscreen button and save state
 
-## Play
+## Setup steps
 
-Open `index.html` after extracting the ZIP. Use WASD/arrows to move, Space to pulse, P to pause, and the Fullscreen button for fullscreen mode. Progress is saved locally.
+1. Create a Supabase project in the Supabase dashboard.
+2. Open the SQL editor and run the contents of `supabase/schema.sql`.
+3. Go to Authentication > Providers and enable Email.
+4. Update `config.js` with your Supabase project URL and public anon key.
+5. Start a local static server and open the page.
 
-## Included games
+Example:
 
-- `quantum_courier.html`
-- `Neon_Echo_Real_Website.html`
-- Fortune Wheel link
+```js
+window.__SUPABASE_CONFIG__ = {
+  url: 'https://xyzcompany.supabase.co',
+  anonKey: 'public-anon-key-from-project-settings'
+};
+```
+
+## Run locally
+
+Use a static local server so browser auth works properly:
+
+```bash
+python -m http.server 8000
+```
+
+Then open:
+
+http://localhost:8000
+
+## Important note
+
+This is a real frontend auth flow, but it is still a browser game frontend. It does not include server-side secrets in the browser, and it avoids hardcoding private keys.
+
+For true production, add:
+
+- email confirmation workflow
+- password reset flow
+- protected admin routes
+- richer game save data
+- deployment to a real static host or custom server
+
+## Admin role
+
+After signup, an admin can be granted from SQL:
+
+```sql
+update public.profiles set role = 'admin' where email = 'you@example.com';
+```
+
+Then the owner panel will unlock in the app.
+
+## Files
+
+- `index.html` — login and game shell
+- `game.js` — gameplay loop and canvas rendering
+- `app.js` — Supabase auth flow, profile loading, and save syncing
+- `config.js` — Supabase config placeholder
+- `supabase/schema.sql` — database tables and policies

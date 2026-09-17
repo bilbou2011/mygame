@@ -1,10 +1,106 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Constellation Loom // Eclipse Edition</title><link rel="stylesheet" href="style.css"></head><body>
-<div id="loading" class="loading"><div class="loader">✦</div><p>BOOTING ECLIPSE EDITION</p></div>
-<section id="login" class="gate"><div class="gate-card"><div class="sigil">✦</div><p class="eyebrow">NIGHTFALL NETWORK / LOCAL PROFILE</p><h1>Welcome, <em>pilot.</em></h1><p class="muted">Save your progress locally. The email field is a profile label only in this offline edition—never enter a password.</p><form id="loginForm"><label>Pilot name<input id="pilotName" required maxlength="18" placeholder="Nova"></label><label>Email <small>optional</small><input id="pilotEmail" type="email" placeholder="you@example.com"></label><button>Enter the archive ↗</button></form></div></section>
-<header><a class="logo" href="#">✦ <b>CONSTELLATION</b> LOOM</a><nav><button id="fullscreenBtn">Fullscreen</button><button id="pauseBtn">Pause</button><button data-open="settings">Settings</button><span id="badge"></span></nav></header>
-<main><section class="hero"><div><p class="eyebrow">ECLIPSE EDITION / <span id="worldLabel">ORBITAL MEADOW</span></p><h1>The sky has<br><em>teeth now.</em></h1><p class="lede">Twenty-four missions across six hostile worlds. The monsters hear your pulse. Keep moving, harvest the light, and survive the eclipse.</p></div><div class="world-card"><span id="worldNumber">WORLD 01 / 06</span><strong id="worldName">Orbital Meadow</strong><small id="worldHint">The first predators are learning.</small></div></section>
-<section class="layout"><div class="game-card"><div class="hud"><div><span class="eyebrow">LIVE MISSION</span><h2 id="mission">Level 1 · First Light</h2></div><div class="stats"><span>LIGHT <b id="score">0/12</b></span><span>LEVEL <b id="level">1</b></span><span>TIME <b id="time">70</b></span><span>ARMOR <b id="armor">100%</b></span></div></div><div class="canvas-wrap"><canvas id="game" width="1100" height="680"></canvas><div class="tip">WASD / arrows move · SPACE pulse · P pause</div></div><div class="controls"><span>Pulse knocks back nearby monsters.</span><span>Autosave: <b id="saveStatus">ready</b></span></div><div id="message" class="message"><div>✦</div><h2 id="messageTitle"></h2><p id="messageText"></p><button id="start">Begin mission</button></div></div>
-<aside class="rail"><div class="card progress"><span class="eyebrow">ECLIPSE ARCHIVE</span><h3 id="progressTitle">World 1 unlocked</h3><div class="bar"><i id="bar"></i></div><small id="progressText">Level 1 of 24</small></div><div class="card"><span class="eyebrow">THREAT INDEX</span><h3 id="threat">Dormant</h3><p class="muted">Monsters scale in number, speed, health and contact damage. Bosses arrive every fourth mission.</p></div><button class="card link" data-open="story"><b>01</b><h3>Archive story</h3><p>Read the field notes and world entries.</p>Open story ↗</button><button class="card link" data-open="settings"><b class="pink">02</b><h3>Settings & saves</h3><p>Accessibility, local profile, owner tools.</p>Open settings ↗</button><div class="ads"><a href="quantum_courier.html" class="ad cyan"><small>PLAY NEXT</small><strong>Quantum Courier</strong><span>Dual-reality logistics ↗</span></a><a href="Neon_Echo_Real_Website.html" class="ad pink"><small>PLAY NEXT</small><strong>Neon Echo</strong><span>Reflexes under pressure ↗</span></a><a href="https://bilbou2011.github.io/fortune-wheel/" target="_blank" rel="noopener" class="ad gold"><small>PLAY NEXT</small><strong>Fortune Wheel</strong><span>Spin for a surprise ↗</span></a></div></aside></section><footer>Built for curious night owls · offline save · Eclipse Edition</footer></main>
-<div id="story" class="modal hidden"><div class="modal-card"><button class="close" data-close>×</button><p class="eyebrow">FIELD NOTES</p><h2>Six worlds. One hungry sky.</h2><p class="muted">The Loom was designed to gather falling stars. At the eclipse, it became a beacon. Something beneath the constellations followed the signal home.</p><p class="muted">Every fourth mission contains a guardian. Reach level 24 and close the signal before the Hollow Crown opens.</p></div></div>
-<div id="settings" class="modal hidden"><div class="modal-card"><button class="close" data-close>×</button><p class="eyebrow">SYSTEM SETTINGS</p><h2>Your rig, your rules.</h2><label class="check"><input id="reduceMotion" type="checkbox"> Reduce motion</label><label class="check"><input id="sound" type="checkbox" checked> Sound effects</label><button id="adminOpen" class="danger">Owner tools</button><div id="admin" class="admin hidden"><p class="muted">Local demo lock—not secure against file inspection.</p><input id="adminCode" placeholder="Owner code"><button id="adminEnter">Unlock</button><pre id="adminTools" class="hidden">OWNER TOOLS ONLINE\n• Grant next level\n• Restore armor\n• Reset local save</pre></div><button id="clear" class="danger">Clear local profile and save</button></div></div>
-<div id="cookies" class="cookies"><div><b>Before you enter the archive</b><p>Only local preferences and progress are stored. No tracking cookies.</p></div><button id="accept">Accept</button></div><script src="game.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Constellation Loom | Supabase Edition</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loader-orbit"><i></i><i></i><i></i><span>LOOM</span></div>
+      <p>Connecting to the archive</p>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">✦ <span>CONSTELLATION</span> LOOM</div>
+      <nav>
+        <button id="fullscreenBtn" class="ghost">Fullscreen</button>
+        <button id="logoutBtn" class="ghost hidden">Log out</button>
+      </nav>
+    </header>
+
+    <main class="app-shell">
+      <section id="authPanel" class="auth-panel card">
+        <div class="eyebrow">REAL AUTH • SUPABASE</div>
+        <h1>Enter the archive</h1>
+        <p class="muted">
+          This edition uses real email auth via Supabase. Create an account, verify via email,
+          and save your progress to the database.
+        </p>
+
+        <div class="auth-tabs">
+          <button class="tab active" data-mode="login">Log in</button>
+          <button class="tab" data-mode="signup">Sign up</button>
+        </div>
+
+        <form id="authForm" class="auth-form">
+          <label>
+            Email
+            <input id="emailInput" type="email" placeholder="you@example.com" required />
+          </label>
+          <label>
+            Password
+            <input id="passwordInput" type="password" placeholder="••••••••" required />
+          </label>
+          <label id="nameWrap" class="hidden">
+            Display name
+            <input id="nameInput" type="text" placeholder="Nova" maxlength="18" />
+          </label>
+          <button id="submitAuthBtn" type="submit" class="primary-button">Log in</button>
+        </form>
+
+        <div id="authMessage" class="auth-message" aria-live="polite"></div>
+      </section>
+
+      <section id="gamePanel" class="game-panel hidden">
+        <div class="hud card">
+          <div>
+            <div class="eyebrow">LIVE MISSION</div>
+            <h2 id="missionTitle">Level 1 · First Light</h2>
+          </div>
+          <div class="stats">
+            <span>Seeds <strong id="seedDisplay">0</strong>/12</span>
+            <span>Level <strong id="levelDisplay">1</strong></span>
+            <span>Time <strong id="timerDisplay">60</strong></span>
+            <span>Armor <strong id="armorDisplay">100%</strong></span>
+          </div>
+        </div>
+
+        <div class="canvas-wrap card">
+          <canvas id="gameCanvas" width="960" height="600"></canvas>
+          <div class="canvas-tip">WASD / arrows move · Space pulses · P pauses</div>
+        </div>
+
+        <div class="bottom-row">
+          <div class="card mini-panel">
+            <div class="eyebrow">ACCOUNT</div>
+            <div id="userBadge" class="user-badge">Pilot</div>
+            <div id="profileMeta" class="meta">Syncing…</div>
+          </div>
+
+          <div class="card mini-panel">
+            <div class="eyebrow">ADMIN</div>
+            <div id="adminStatus" class="meta">Not enabled</div>
+            <button id="adminButton" class="ghost small hidden">Open admin panel</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside id="adminPanel" class="admin-panel hidden">
+      <div class="card admin-card">
+        <div class="eyebrow">OWNER PANEL</div>
+        <h3>Admin tools</h3>
+        <button id="grantLevelBtn" class="primary-button small">Grant next level</button>
+        <button id="restoreArmorBtn" class="ghost small">Restore armor</button>
+        <button id="resetSaveBtn" class="danger small">Reset player save</button>
+      </div>
+    </aside>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="game.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

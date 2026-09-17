@@ -1,6 +1,291 @@
-const c=document.getElementById('game'),ctx=c.getContext('2d'),W=c.width,H=c.height,K={};let g,paused=false,sound=localStorage.getItem('loom-sound')!=='off';const $=id=>document.getElementById(id),rnd=(a,b)=>Math.random()*(b-a)+a,clamp=(n,a,b)=>Math.max(a,Math.min(b,n));const worlds=[['Orbital Meadow','First Light','#86f7df'],['Glass Sea','Tide of Teeth','#9d8cff'],['Hollow Crown','The Last Thread','#ff75b6'],['Black Orchard','The Root Signal','#ff6879'],['Solar Ruins','Ash Meridian','#ffd479'],['The Quiet End','Eclipse Core','#ffffff']];let level=+localStorage.getItem('loom-level')||1,pilot=localStorage.getItem('loom-pilot');if(pilot)$('badge').textContent=`PILOT // ${pilot.toUpperCase()}`;
-function setup(){let n=Math.max(1,Math.min(24,level)),w=Math.ceil(n/4),boss=n%4===0;g={state:'ready',time:Math.max(28,74-n*1.6),light:0,pulse:100,last:0,cool:0,stars:[],seeds:[],monsters:[],parts:[],p:{x:W/2,y:H/2,r:15,speed:260,inv:0,glow:0},boss};g.stars=Array.from({length:180},()=>({x:Math.random()*W,y:Math.random()*H,r:rnd(.5,2),a:rnd(.15,.8),t:rnd(0,7)}));g.seeds=Array.from({length:12},()=>({x:rnd(45,W-45),y:rnd(45,H-45),t:rnd(0,7)}));let count=4+n*3+(boss?4:0);g.monsters=Array.from({length:count},(_,i)=>({x:rnd(20,W-20),y:rnd(20,H-20),r:rnd(16,26)+(boss&&i===0?16:0),vx:rnd(-45,45),vy:rnd(-45,45),t:rnd(0,7),boss:boss&&i===0}));let C=worlds[w-1];$('mission').textContent=`Level ${n} · ${C[1]}${boss?' · GUARDIAN':''}`;$('level').textContent=n;$('time').textContent=Math.ceil(g.time);$('score').textContent='0/12';$('armor').textContent='100%';$('worldLabel').textContent=C[0].toUpperCase();$('worldNumber').textContent=`WORLD 0${w} / 06`;$('worldName').textContent=C[0];$('progressTitle').textContent=`World ${w} unlocked`;$('progressText').textContent=`Level ${n} of 24`;$('bar').style.width=`${n/24*100}%`;$('threat').textContent=boss?'GUARDIAN DETECTED':`THREAT ${Math.min(99,20+n*3)}%`}
-function burst(x,y,col,num=20){for(let i=0;i<num;i++)g.parts.push({x,y,vx:rnd(-160,160),vy:rnd(-160,160),life:rnd(.3,1),col})}function msg(a,b,button='Begin mission'){$('messageTitle').textContent=a;$('messageText').textContent=b;$('start').textContent=button;$('message').classList.remove('hidden')}function start(){setup();g.state='playing';paused=false;$('message').classList.add('hidden');$('saveStatus').textContent='saving...';setTimeout(()=>$('saveStatus').textContent='saved',300)}function tone(f){if(!sound)return;try{let a=new AudioContext(),o=a.createOscillator(),v=a.createGain();o.frequency.value=f;v.gain.value=.025;o.connect(v);v.connect(a.destination);o.start();o.stop(a.currentTime+.06)}catch(e){}}
-function update(dt){if(g.state!=='playing'||paused)return;let p=g.p,dx=0,dy=0;if(K.ArrowLeft||K.a)dx--;if(K.ArrowRight||K.d)dx++;if(K.ArrowUp||K.w)dy--;if(K.ArrowDown||K.s)dy++;let m=Math.hypot(dx,dy)||1;p.x=clamp(p.x+dx/m*p.speed*dt,18,W-18);p.y=clamp(p.y+dy/m*p.speed*dt,18,H-18);p.inv=Math.max(0,p.inv-dt);p.glow+=dt*3;g.cool=Math.max(0,g.cool-dt);if(K[' ']&&g.pulse>=35&&g.cool<=0){g.pulse-=35;g.cool=1.15;burst(p.x,p.y,'#86f7df',35);tone(760);g.monsters.forEach(q=>{let a=q.x-p.x,b=q.y-p.y,d=Math.hypot(a,b);if(d<220){q.vx+=a/(d||1)*150;q.vy+=b/(d||1)*150}})}g.pulse=clamp(g.pulse+dt*7,0,100);$('armor').textContent=Math.round(g.pulse)+'%';g.stars.forEach(s=>{s.y+=dt*9;s.t+=dt*2;if(s.y>H)s.y=0});g.seeds.forEach(s=>{s.t+=dt*3;if(Math.hypot(p.x-s.x,p.y-s.y)<27){s.x=rnd(35,W-35);s.y=rnd(35,H-35);g.light++;g.pulse=clamp(g.pulse+10,0,100);burst(s.x,s.y,'#ffd479',20);tone(620);$('score').textContent=g.light+'/12';}});g.monsters.forEach(q=>{q.t+=dt;let d=Math.hypot(p.x-q.x,p.y-q.y),chase=(level*.8+(q.boss?18:0));q.x+=q.vx*dt+(p.x-q.x)/Math.max(85,d)*chase*dt;q.y+=q.vy*dt+(p.y-q.y)/Math.max(85,d)*chase*dt;if(q.x<q.r||q.x>W-q.r)q.vx*=-1;if(q.y<q.r||q.y>H-q.r)q.vy*=-1;if(d<q.r+p.r+8&&p.inv<=0){p.inv=1.05;g.pulse=clamp(g.pulse-(11+level*.8+(q.boss?12:0)),0,100);burst(p.x,p.y,'#ff6879',25);tone(130);if(g.pulse<=0){g.state='lost';msg('The dark got through','The predators are stronger here. Pulse, turn, and never stop moving.','Try again')}}});for(let i=g.parts.length-1;i>=0;i--){let q=g.parts[i];q.x+=q.vx*dt;q.y+=q.vy*dt;q.life-=dt;if(q.life<=0)g.parts.splice(i,1)}g.time-=dt;$('time').textContent=Math.max(0,Math.ceil(g.time));if(g.light>=12){g.state='won';if(level<24){level++;localStorage.setItem('loom-level',level);msg(g.boss?'Guardian broken':'Level complete',g.boss?'The guardian fell. A new world has opened.':'The next layer is opening. The things inside are worse.','Continue')}else msg('Eclipse sealed','You finished all 24 missions and stitched the sky shut.','Play again')}else if(g.time<=0){g.state='lost';msg('Dawn arrived','The stars scattered before the Loom could catch them.','Try again')}}
-function draw(){let C=worlds[Math.ceil(level/4)-1][2],bg=ctx.createRadialGradient(W/2,H/2,20,W/2,H/2,W*.8);bg.addColorStop(0,C+'32');bg.addColorStop(1,'#070913');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);g.stars.forEach(s=>{ctx.fillStyle=`rgba(255,255,255,${s.a*(.7+.3*Math.sin(s.t))})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,7);ctx.fill()});g.seeds.forEach(s=>{let q=.5+Math.sin(s.t)*.5;ctx.fillStyle='#ffd479';ctx.shadowBlur=22;ctx.shadowColor='#ffd479';ctx.beginPath();ctx.arc(s.x,s.y,7+q*3,0,7);ctx.fill();ctx.shadowBlur=0});g.monsters.forEach(q=>{ctx.save();ctx.translate(q.x,q.y);ctx.rotate(Math.atan2(q.vy,q.vx));ctx.fillStyle=q.boss?'#45152c':'#24152f';ctx.strokeStyle=q.boss?'#ffd479':'#ff6879';ctx.lineWidth=q.boss?3:2;ctx.beginPath();ctx.moveTo(-q.r,0);ctx.quadraticCurveTo(-q.r,-q.r,q.r*.2,-q.r*.6);ctx.lineTo(q.r+10,0);ctx.lineTo(q.r*.2,q.r*.6);ctx.quadraticCurveTo(-q.r,q.r,-q.r,0);ctx.fill();ctx.stroke();ctx.fillStyle=q.boss?'#ffd479':'#ff6879';ctx.beginPath();ctx.arc(q.r*.25,-5,3,0,7);ctx.arc(q.r*.25,5,3,0,7);ctx.fill();ctx.restore()});g.parts.forEach(q=>{ctx.globalAlpha=Math.max(0,q.life);ctx.fillStyle=q.col;ctx.beginPath();ctx.arc(q.x,q.y,3,0,7);ctx.fill();ctx.globalAlpha=1});let p=g.p;ctx.fillStyle='rgba(134,247,223,.16)';ctx.beginPath();ctx.arc(p.x,p.y,28+Math.sin(p.glow)*6,0,7);ctx.fill();ctx.fillStyle=p.inv>0?'#ffd479':'#86f7df';ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fill();ctx.fillStyle='#071817';ctx.beginPath();ctx.arc(p.x+4,p.y-3,2.5,0,7);ctx.fill();if(paused){ctx.fillStyle='#070913aa';ctx.fillRect(0,0,W,H);ctx.fillStyle='#fff';ctx.font='bold 30px system-ui';ctx.textAlign='center';ctx.fillText('PAUSED',W/2,H/2)}}function loop(t){let dt=Math.min((t-(g.last||t))/1000,.033);g.last=t;update(dt);draw();requestAnimationFrame(loop)}
-addEventListener('keydown',e=>{let k=e.key.length===1?e.key.toLowerCase():e.key;if(k===' ')e.preventDefault();if(k==='p')paused=!paused;K[k]=true});addEventListener('keyup',e=>{let k=e.key.length===1?e.key.toLowerCase():e.key;K[k]=false});$('start').onclick=start;$('pauseBtn').onclick=()=>paused=!paused;$('fullscreenBtn').onclick=()=>document.documentElement.requestFullscreen?.();$('loginForm').onsubmit=e=>{e.preventDefault();pilot=$('pilotName').value.trim()||'Nova';localStorage.setItem('loom-pilot',pilot);let email=$('pilotEmail').value.trim();if(email)localStorage.setItem('loom-email',email);$('badge').textContent=`PILOT // ${pilot.toUpperCase()}`;$('login').classList.add('hidden')};document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>$(b.dataset.open).classList.remove('hidden'));document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.modal').classList.add('hidden'));$('accept').onclick=()=>{localStorage.setItem('loom-cookie-ok','yes');$('cookies').classList.remove('show')};if(localStorage.getItem('loom-cookie-ok')!=='yes')$('cookies').classList.add('show');$('clear').onclick=()=>{localStorage.clear();location.reload()};$('sound').checked=sound;$('sound').onchange=e=>{sound=e.target.checked;localStorage.setItem('loom-sound',sound?'on':'off')};$('adminOpen').onclick=()=>$('admin').classList.toggle('hidden');$('adminEnter').onclick=()=>{if($('adminCode').value==='LOOM-OWNER-2026'){$('adminTools').classList.remove('hidden');$('adminTools').textContent='OWNER TOOLS ONLINE\n• Grant next level: use browser console\n• Local progress is editable\n• This lock is not server security'}else alert('Access denied')};setup();msg('The Loom is waiting','Twenty-four missions, six worlds, and a guardian every fourth level. Gather 12 light and survive.');addEventListener('load',()=>setTimeout(()=>$('loading').classList.add('done'),1200));requestAnimationFrame(loop);
+const keys = {};
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width;
+const H = canvas.height;
+
+const rand = (min, max) => Math.random() * (max - min) + min;
+const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
+
+const game = {
+  state: 'ready',
+  level: 1,
+  score: 0,
+  armor: 100,
+  timeLeft: 60,
+  pulse: 100,
+  last: 0,
+  cooldown: 0,
+  stars: [],
+  seeds: [],
+  monsters: [],
+  particles: [],
+  player: { x: W / 2, y: H / 2, r: 15, speed: 250, invulnerable: 0 }
+};
+
+function buildLevel(level) {
+  const world = 1 + Math.floor((level - 1) / 4);
+  game.level = level;
+  game.score = 0;
+  game.timeLeft = Math.max(28, 70 - level * 1.6);
+  game.armor = 100;
+  game.pulse = 100;
+  game.cooldown = 0;
+  game.stars = Array.from({ length: 160 }, () => ({
+    x: rand(0, W),
+    y: rand(0, H),
+    r: rand(0.8, 2.6),
+    alpha: rand(0.2, 0.8),
+    drift: rand(0, 10)
+  }));
+
+  game.seeds = Array.from({ length: 12 }, () => ({
+    x: rand(50, W - 50),
+    y: rand(50, H - 50),
+    pulse: rand(0, 10)
+  }));
+
+  const count = 4 + level * 3;
+  game.monsters = Array.from({ length: count }, () => ({
+    x: rand(40, W - 40),
+    y: rand(40, H - 40),
+    r: rand(12, 22),
+    vx: rand(-55, 55),
+    vy: rand(-55, 55),
+    boss: false,
+    phase: rand(0, 10)
+  }));
+
+  if (level % 4 === 0) {
+    const boss = game.monsters[0];
+    boss.boss = true;
+    boss.r = 32;
+    boss.vx *= 1.5;
+    boss.vy *= 1.5;
+  }
+
+  game.player.x = W / 2;
+  game.player.y = H / 2;
+  game.player.invulnerable = 0;
+
+  document.getElementById('missionTitle').textContent = `Level ${level} · ${level % 4 === 0 ? 'Guardian' : 'First Light'}`;
+  document.getElementById('levelDisplay').textContent = String(level);
+  document.getElementById('timerDisplay').textContent = String(Math.ceil(game.timeLeft));
+  document.getElementById('seedDisplay').textContent = '0';
+  document.getElementById('armorDisplay').textContent = '100%';
+}
+
+function burst(x, y, color, count = 22) {
+  for (let i = 0; i < count; i += 1) {
+    game.particles.push({
+      x,
+      y,
+      vx: rand(-180, 180),
+      vy: rand(-180, 180),
+      life: rand(0.3, 1),
+      color
+    });
+  }
+}
+
+function startGameLoop() {
+  game.state = 'playing';
+  buildLevel(game.level);
+}
+
+function update(dt) {
+  if (game.state !== 'playing') return;
+
+  const p = game.player;
+  let dx = 0;
+  let dy = 0;
+
+  if (keys.ArrowLeft || keys.a) dx -= 1;
+  if (keys.ArrowRight || keys.d) dx += 1;
+  if (keys.ArrowUp || keys.w) dy -= 1;
+  if (keys.ArrowDown || keys.s) dy += 1;
+
+  if (dx || dy) {
+    const len = Math.hypot(dx, dy) || 1;
+    p.x = clamp(p.x + (dx / len) * p.speed * dt, 18, W - 18);
+    p.y = clamp(p.y + (dy / len) * p.speed * dt, 18, H - 18);
+  }
+
+  p.invulnerable = Math.max(0, p.invulnerable - dt);
+  game.cooldown = Math.max(0, game.cooldown - dt);
+
+  if (keys[' '] && game.pulse >= 35 && game.cooldown <= 0) {
+    game.pulse -= 35;
+    game.cooldown = 1.1;
+    burst(p.x, p.y, '#86f7df', 30);
+    game.monsters.forEach((m) => {
+      const ax = m.x - p.x;
+      const ay = m.y - p.y;
+      const dist = Math.hypot(ax, ay) || 1;
+      if (dist < 220) {
+        m.vx += (ax / dist) * 120;
+        m.vy += (ay / dist) * 120;
+      }
+    });
+  }
+
+  game.pulse = clamp(game.pulse + dt * 6, 0, 100);
+  document.getElementById('armorDisplay').textContent = `${Math.round(game.pulse)}%`;
+
+  game.seeds.forEach((seed) => {
+    if (Math.hypot(p.x - seed.x, p.y - seed.y) < 25) {
+      seed.x = rand(35, W - 35);
+      seed.y = rand(35, H - 35);
+      game.score += 1;
+      document.getElementById('seedDisplay').textContent = String(game.score);
+      burst(seed.x, seed.y, '#ffd479', 18);
+      if (game.score >= 12) {
+        game.state = 'won';
+        window.dispatchEvent(new CustomEvent('loom-win'));
+      }
+    }
+  });
+
+  game.monsters.forEach((m) => {
+    const chase = game.level * 0.9 + (m.boss ? 18 : 0);
+    const ax = p.x - m.x;
+    const ay = p.y - m.y;
+    const dist = Math.hypot(ax, ay) || 1;
+
+    m.x += m.vx * dt + (ax / dist) * chase * dt;
+    m.y += m.vy * dt + (ay / dist) * chase * dt;
+
+    if (m.x < m.r || m.x > W - m.r) m.vx *= -1;
+    if (m.y < m.r || m.y > H - m.r) m.vy *= -1;
+
+    if (dist < m.r + p.r + 6 && p.invulnerable <= 0) {
+      p.invulnerable = 0.9;
+      game.pulse = clamp(game.pulse - (12 + (m.boss ? 18 : 0)), 0, 100);
+      burst(p.x, p.y, '#ff6879', 24);
+      if (game.pulse <= 0) {
+        game.state = 'lost';
+        window.dispatchEvent(new CustomEvent('loom-lost'));
+      }
+    }
+  });
+
+  for (let i = game.particles.length - 1; i >= 0; i -= 1) {
+    const p = game.particles[i];
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+    p.life -= dt;
+    if (p.life <= 0) game.particles.splice(i, 1);
+  }
+
+  game.timeLeft -= dt;
+  document.getElementById('timerDisplay').textContent = String(Math.max(0, Math.ceil(game.timeLeft)));
+  if (game.timeLeft <= 0 && game.state === 'playing') {
+    game.state = 'lost';
+    window.dispatchEvent(new CustomEvent('loom-lost'));
+  }
+}
+
+function draw() {
+  const theme = ['#86f7df', '#9d8cff', '#ff75b6', '#ff6879', '#ffd479'][Math.min(Math.floor((game.level - 1) / 4), 4)];
+  const bg = ctx.createRadialGradient(W / 2, H / 2, 20, W / 2, H / 2, W * 0.8);
+  bg.addColorStop(0, `${theme}30`);
+  bg.addColorStop(1, '#070913');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  game.stars.forEach((star) => {
+    ctx.fillStyle = `rgba(255,255,255,${star.alpha})`;
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  game.seeds.forEach((seed) => {
+    const pulse = 0.5 + Math.sin(seed.pulse) * 0.5;
+    ctx.fillStyle = '#ffd479';
+    ctx.shadowBlur = 16;
+    ctx.shadowColor = '#ffd479';
+    ctx.beginPath();
+    ctx.arc(seed.x, seed.y, 7 + pulse * 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  game.monsters.forEach((m) => {
+    ctx.save();
+    ctx.translate(m.x, m.y);
+    ctx.rotate(Math.atan2(m.vy, m.vx));
+    ctx.fillStyle = m.boss ? '#45152c' : '#24152f';
+    ctx.strokeStyle = m.boss ? '#ffd479' : '#ff6879';
+    ctx.lineWidth = m.boss ? 3 : 2;
+    ctx.beginPath();
+    ctx.moveTo(-m.r, 0);
+    ctx.quadraticCurveTo(-m.r, -m.r, m.r * 0.2, -m.r * 0.6);
+    ctx.lineTo(m.r + 10, 0);
+    ctx.lineTo(m.r * 0.2, m.r * 0.6);
+    ctx.quadraticCurveTo(-m.r, m.r, -m.r, 0);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+  });
+
+  game.particles.forEach((p) => {
+    ctx.globalAlpha = Math.max(0, p.life);
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  });
+
+  const p = game.player;
+  ctx.fillStyle = 'rgba(134,247,223,0.18)';
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 26 + Math.sin(Date.now() / 200) * 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = p.invulnerable > 0 ? '#ffd479' : '#86f7df';
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#071817';
+  ctx.beginPath();
+  ctx.arc(p.x + 4, p.y - 3, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function animationFrame(ts) {
+  const dt = Math.min((ts - (game.last || ts)) / 1000, 0.033);
+  game.last = ts;
+  update(dt);
+  draw();
+  requestAnimationFrame(animationFrame);
+}
+
+window.addEventListener('keydown', (event) => {
+  const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+  if (key === ' ') event.preventDefault();
+  if (key === 'p') {
+    window.dispatchEvent(new CustomEvent('loom-pause-toggle'));
+  }
+  keys[key] = true;
+});
+window.addEventListener('keyup', (event) => {
+  const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
+  keys[key] = false;
+});
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('done');
+  }, 1000);
+  requestAnimationFrame(animationFrame);
+});
+
+window.gameAPI = {
+  startGameLoop,
+  buildLevel,
+  game,
+  burst
+};
