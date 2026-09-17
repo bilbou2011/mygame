@@ -1,13 +1,17 @@
-# Constellation Loom — Nightfall Protocol v3
+# Constellation Loom — Eclipse Edition
 
-The premium local browser build includes:
+This is a large standalone browser build with 24 missions across six worlds, escalating monster pursuit, guardian encounters every fourth level, fullscreen, pause, autosave, local profile/email label, cookie consent, settings, accessibility-friendly layout, story, ads, and a local owner-tools demo.
 
-- Cinematic loading screen and local pilot profile
-- Explicit cookie notice stored only in local storage
-- Three worlds and twelve progressive levels
-- Monster count, chase pressure, and damage scale with each level
-- Story archive, settings, sound toggle, and reduced-motion-ready layout
-- Particle bursts, animated starfield, world color shifts, audio feedback, and level progression
-- Fortune Wheel promotion at https://bilbou2011.github.io/fortune-wheel/
+## Important security note
 
-Extract the ZIP and open `index.html`. Use WASD/arrows to move and Space to pulse. Never enter a real password: the login is only a local pilot-name gate.
+This download is entirely client-side. The email field is saved only in browser local storage and is **not official email authentication**. Never enter a password. The owner panel code is also not truly secret because anyone can inspect local files. Real email verification and secure admin access require a backend such as Firebase Auth, Supabase Auth, or a custom server.
+
+## Play
+
+Open `index.html` after extracting the ZIP. Use WASD/arrows to move, Space to pulse, P to pause, and the Fullscreen button for fullscreen mode. Progress is saved locally.
+
+## Included games
+
+- `quantum_courier.html`
+- `Neon_Echo_Real_Website.html`
+- Fortune Wheel link
