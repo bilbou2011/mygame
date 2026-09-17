@@ -1,7 +1,13 @@
-# Constellation Loom · Nightfall Protocol
+# Constellation Loom — Nightfall Protocol v3
 
-A local, standalone browser game with a profile gate, story archive, settings, cookie notice, three worlds, twelve increasingly difficult levels, stronger monsters, and a Fortune Wheel link.
+The premium local browser build includes:
 
-Open `index.html` after extracting the ZIP. The login is only a local pilot-name screen: never enter a real password. Your name and settings stay in your browser's local storage.
+- Cinematic loading screen and local pilot profile
+- Explicit cookie notice stored only in local storage
+- Three worlds and twelve progressive levels
+- Monster count, chase pressure, and damage scale with each level
+- Story archive, settings, sound toggle, and reduced-motion-ready layout
+- Particle bursts, animated starfield, world color shifts, audio feedback, and level progression
+- Fortune Wheel promotion at https://bilbou2011.github.io/fortune-wheel/
 
-Controls: WASD/arrows to move; Space to pulse. Collect 12 seeds, survive the monsters, and advance through the worlds.
+Extract the ZIP and open `index.html`. Use WASD/arrows to move and Space to pulse. Never enter a real password: the login is only a local pilot-name gate.
