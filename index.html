@@ -1,31 +1,55 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Constellation Loom</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="page-shell">
-      <div class="hud-panel">
-        <div class="brand-wrap">
-          <span class="pill">Dreamcraft</span>
-          <h1>Constellation Loom</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b18">
+  <title>Constellation Loom — A tiny cosmic survival game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="loading-screen" id="loadingScreen">
+    <div class="loader-mark"><span></span><span></span><span></span></div>
+    <p>Waking the night sky<span class="dots">...</span></p>
+  </div>
+
+  <header class="topbar">
+    <a class="logo" href="#top" aria-label="Constellation Loom home"><span class="logo-orbit">✦</span><span>Constellation <b>Loom</b></span></a>
+    <div class="topbar-actions"><span class="live-dot"></span> <span>Night 01</span><a href="#how-to-play">How to play</a></div>
+  </header>
+
+  <main id="top" class="site-wrap">
+    <section class="hero-copy">
+      <div><p class="eyebrow">A pocket-sized cosmic adventure</p><h1>Stitch the sky<br><em>before dawn.</em></h1><p class="lede">The stars have come loose. Gather their light, hold back the nightweed, and leave the universe a little brighter.</p></div>
+      <a class="wheel-ad hero-ad" href="https://bilbou2011.github.io/fortune-wheel/" target="_blank" rel="noopener"><span class="ad-kicker">While you wait</span><strong>Spin your luck</strong><span>Try Fortune Wheel&nbsp; ↗</span><i>✦</i></a>
+    </section>
+
+    <section class="game-layout">
+      <div class="game-card">
+        <div class="hud-panel">
+          <div class="game-title"><span class="tiny-label">LIVE MISSION</span><h2>Constellation Loom</h2></div>
+          <div class="stats"><div class="stat"><span>Seeds</span><strong id="seedCount">0</strong><small>/ 12</small></div><div class="stat"><span>Time</span><strong id="timer">45</strong><small>sec</small></div><div class="stat"><span>Pulse</span><strong id="pulseDisplay">Ready</strong></div></div>
         </div>
-        <div class="stats">
-          <div class="stat"><span class="label">Seeds</span><strong id="seedCount">0</strong></div>
-          <div class="stat"><span class="label">Time</span><strong id="timer">45</strong></div>
-          <div class="stat"><span class="label">Pulse</span><strong id="pulseDisplay">Ready</strong></div>
-        </div>
+        <div class="canvas-wrap"><canvas id="gameCanvas" width="960" height="600" aria-label="Constellation Loom game canvas"></canvas><div class="canvas-tip">WASD / arrows to move <b>·</b> Space to pulse</div></div>
+        <div class="game-footer"><span><i class="key">W</i><i class="key">A</i><i class="key">S</i><i class="key">D</i> Move</span><span><i class="key space-key">SPACE</i> Push back the weed</span><span class="motto">Make the dark useful.</span></div>
+        <div class="message" id="messageBox"><div class="message-icon">✦</div><h2 id="messageTitle">The Loom is waiting</h2><p id="messageText">Gather 12 starlight seeds and survive the nightweed swarm.</p><button id="startButton">Begin the mission</button></div>
       </div>
-      <canvas id="gameCanvas" width="960" height="600" aria-label="Constellation Loom game canvas"></canvas>
-      <div class="message" id="messageBox">
-        <h2 id="messageTitle">The Loom is waiting</h2>
-        <p id="messageText">Gather 12 starlight seeds and survive the nightweed swarm.</p>
-        <button id="startButton">Begin</button>
-      </div>
-    </div>
-    <script src="game.js"></script>
-  </body>
+      <aside class="side-rail" id="how-to-play">
+        <div class="rail-card"><span class="card-number">01</span><h3>Collect the seeds</h3><p>Float through the field and touch each golden spark. Every seed reappears somewhere new.</p></div>
+        <div class="rail-card"><span class="card-number pink">02</span><h3>Mind the weeds</h3><p>The red nightweed drifts toward you. A collision drains your pulse and costs precious time.</p></div>
+        <a class="wheel-ad rail-ad" href="https://bilbou2011.github.io/fortune-wheel/" target="_blank" rel="noopener"><span class="ad-kicker">ANOTHER LITTLE GAME</span><strong>Fortune Wheel</strong><p>Need a different kind of thrill? Give the wheel a spin.</p><span class="ad-button">Open game ↗</span></a>
+      </aside>
+    </section>
+    <footer class="footer"><span>Made for curious night owls.</span><span>Constellation Loom · v1.0</span></footer>
+  </main>
+
+  <div class="cookie-banner" id="cookieBanner" role="dialog" aria-label="Cookie notice"><div><strong>One tiny cookie notice</strong><p>This game uses local storage only to remember your preferences. No tracking, no accounts, no mystery.</p></div><button id="acceptCookies">Got it</button></div>
+  <script src="game.js"></script>
+  <script>
+    window.addEventListener('load', () => setTimeout(() => document.getElementById('loadingScreen').classList.add('done'), 650));
+    const cookieBanner = document.getElementById('cookieBanner');
+    if (localStorage.getItem('loom-cookie-ok') !== 'yes') cookieBanner.classList.add('show');
+    document.getElementById('acceptCookies').addEventListener('click', () => { localStorage.setItem('loom-cookie-ok', 'yes'); cookieBanner.classList.remove('show'); });
+  </script>
+</body>
 </html>
